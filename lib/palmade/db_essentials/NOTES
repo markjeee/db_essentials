@@ -1,0 +1,19 @@
+* How to achieve multi-db connections *
+
+- there is a global connection pool
+- connection pool is per database specification (supports nested db specs)
+- threads are assigned instances of the connections in the pool (they lease it)
+- threads leases at the top of the controller
+- threads returns at the end of the controller
+- the connection pool manages the pool, and increases the available connection as needed (with max specified)
+- threads don't really hold the actual connection object, but an identifier to the connection object
+- an ActiveRecord class can have a specific connection per thread -- this is the lease
+- support thread-specific database name is the same as the datamapper implementation
+- note: connection pooling is also taken from datamapper and sequel
+- bonus: add support for instantiated active_record objects to remember the connection when it was created
+
+*STEPS*
+
+- First create the connection pool
+- then extend connection specification to support thread specific
+- extend connection leasing to check for thread specific or globally set connection
